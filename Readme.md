@@ -1,8 +1,10 @@
 # TS3 Exporter
+![](https://github.com/hikhvar/ts3exporter/workflows/tests/badge.svg) ![](https://github.com/hikhvar/ts3exporter/workflows/release/badge.svg)
+
 This exporter uses the server query protocol to provide prometheus metrics.
 
 ## Build
-The build is tested with go version 1.14. Since the build uses go modules, it requires at least 1.11.
+The build is tested with go version 1.14. Since the build uses new standard error formatting, it requires at least 1.13.
 ```bash
 go build
 ```
