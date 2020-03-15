@@ -3,6 +3,9 @@
 
 This exporter uses the server query protocol to provide prometheus metrics.
 
+The `contrib` directory contains a grafana dashboard and an ansible role to install
+the exporter. 
+
 ## Build
 The build is tested with go version 1.14. Since the build uses new standard error formatting, it requires at least 1.13.
 ```bash
@@ -209,3 +212,6 @@ ts3_serverinfo_speech_bytes_sent_total{virtualserver="Gute Stube"} 0
 # TYPE ts3_serverinfo_uptime counter
 ts3_serverinfo_uptime{virtualserver="Gute Stube"} 88180
 ```
+
+Dashboard:
+![grafana dashboard](docs/img/dashboad.png)
