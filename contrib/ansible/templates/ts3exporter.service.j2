@@ -1,0 +1,10 @@
+[Unit]
+Description=Teamspeak 3 prometheus exporter
+
+[Service]
+User=ts3exporter
+ExecStart=/usr/bin/ts3exporter -remote {{ remote }} -listen {{ listen }} -user {{ user }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,57 @@
+
+- name: Download ts3exporter
+  delegate_to: localhost
+  get_url:
+    url: "https://github.com/hikhvar/ts3exporter/releases/download/v{{ version }}/ts3exporter_{{ version }}_linux_amd64.tar.gz"
+    dest: /tmp/ts3exporter_{{ version }}_linux_amd64.tar.gz
+    checksum: 'sha256:{{ checksum }}'
+  register: ts3exporter_download
+
+- name: Extract ts3exporter tar gz
+  delegate_to: localhost
+  unarchive:
+    src:  /tmp/ts3exporter_{{ version }}_linux_amd64.tar.gz
+    dest: /tmp/
+  when: ts3exporter_download.changed
+
+- name: Install ts3exporter
+  copy:
+    src: /tmp/ts3exporter
+    dest: /usr/bin/ts3exporter
+    mode: 755
+  notify: restart ts3exporter
+
+- name: Add ts3exporter group
+  group:
+    name: ts3exporter
+    gid: "{{ ts3_exporter_userid }}"
+    state: present
+
+- name: Add ts3exporter user
+  user:
+    name: ts3exporter
+    uid: "{{ ts3_exporter_userid }}"
+    group: ts3exporter
+    shell: /usr/bin/false
+
+- name: Install ts3exporter service
+  template:
+    src: templates/ts3exporter.service.j2
+    dest: /etc/systemd/system/ts3exporter.service
+  notify: restart ts3exporter
+  register: ts3exporter_service
+
+- name: Copy using inline content
+  copy:
+    content: '{{ password }}'
+    dest: /etc/ts3exporter/password
+    mode: 0600
+    owner: ts3exporter
+    group: ts3exporter
+
+- name: Start ts3exporter service
+  systemd:
+    name: ts3exporter.service
+    daemon_reload: true
+    enabled: true
+    state: started

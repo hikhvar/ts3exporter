@@ -1,0 +1,5 @@
+- name: restart ts3exporter
+  systemd:
+    name: ts3exporter.service
+    state: restarted
+    enabled: true

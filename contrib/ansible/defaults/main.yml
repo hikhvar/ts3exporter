@@ -1,0 +1,7 @@
+version: 0.0.2
+checksum: 1f47a2086187ff206d2db8d75e571e7dc7139542a8fe4a1a485c2a6017eb6180
+remote: localhost:10011
+listen: 0.0.0.0:9189
+user: serveradmin
+password: set_me
+ts3_exporter_userid: 1050
