@@ -14,13 +14,16 @@ go build
 # ./ts3exporter -h
 Usage of ./ts3exporter:
   -listen string
-    	listen address of the exporter (default ":9189")
+        listen address of the exporter (default ":9189")
   -password string
-    	the serverquery password of the ts3exporter
+        the serverquery password of the ts3exporter
+  -passwordfile string
+        file containing the password. Only read if -password not set. Must have 0600 permission. (default "/etc/ts3exporter/password")
   -remote string
-    	remote address of server query port (default "localhost:10011")
+        remote address of server query port (default "localhost:10011")
   -user string
-    	the serverquery user of the ts3exporter (default "serveradmin")
+        the serverquery user of the ts3exporter (default "serveradmin")
+
 ```
 
 ## Examples:
