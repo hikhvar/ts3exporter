@@ -25,7 +25,7 @@ func TestVirtualServerStructTags(t *testing.T) {
 		MaxClients:                     32,
 		Uptime:                         11088,
 		ChannelsOnline:                 6,
-		MaxDownloadTotalBandwidth:      1.8446744077709552e+19,
+		MaxDownloadTotalBandwidth:      1.8446744077709554e+19,
 		MaxUploadTotalBandwidth:        1.8446744073709552e+19,
 		ClientsConnections:             1,
 		QueryClientsConnections:        1,
