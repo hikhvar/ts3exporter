@@ -10,6 +10,7 @@ type VirtualServer struct {
 	Name                      string  `sq:"virtualserver_name"`
 	Status                    string  `sq:"virtualserver_status"`
 	ClientsOnline             int     `sq:"virtualserver_clientsonline"`
+	QueryClientsOnline        int     `sq:"virtualserver_queryclientsonline"`
 	MaxClients                int     `sq:"virtualserver_maxclients"`
 	Uptime                    int     `sq:"virtualserver_uptime"`
 	ChannelsOnline            int     `sq:"virtualserver_channelsonline"`

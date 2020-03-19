@@ -13,6 +13,7 @@ type ServerInfo struct {
 	vServerView *serverquery.VirtualServerView
 
 	ClientsOnline             *prometheus.Desc
+	QueryClientsOnline        *prometheus.Desc
 	Online                    *prometheus.Desc
 	MaxClients                *prometheus.Desc
 	Uptime                    *prometheus.Desc
@@ -42,6 +43,7 @@ func NewServerInfo(c serverquery.Executor) *ServerInfo {
 	return &ServerInfo{
 		vServerView:                    serverquery.NewVirtualServer(c),
 		ClientsOnline:                  prometheus.NewDesc(fqdn(serverInfoSubsystem, "clients_online"), "number of currently online clients", serverInfoLabels, nil),
+		QueryClientsOnline:             prometheus.NewDesc(fqdn(serverInfoSubsystem, "query_clients_online"), "number of currently online query clients", serverInfoLabels, nil),
 		Online:                         prometheus.NewDesc(fqdn(serverInfoSubsystem, "online"), "is the virtualserver online", serverInfoLabels, nil),
 		MaxClients:                     prometheus.NewDesc(fqdn(serverInfoSubsystem, "max_clients"), "maximal number of allowed clients", serverInfoLabels, nil),
 		Uptime:                         prometheus.NewDesc(fqdn(serverInfoSubsystem, "uptime"), "uptime of the virtual server", serverInfoLabels, nil),
@@ -71,6 +73,7 @@ func (s *ServerInfo) Describe(c chan<- *prometheus.Desc) {
 func (s *ServerInfo) Collect(c chan<- prometheus.Metric) {
 	for _, vs := range s.vServerView.All() {
 		c <- prometheus.MustNewConstMetric(s.ClientsOnline, prometheus.GaugeValue, float64(vs.ClientsOnline), vs.Name)
+		c <- prometheus.MustNewConstMetric(s.QueryClientsOnline, prometheus.GaugeValue, float64(vs.QueryClientsOnline), vs.Name)
 		c <- prometheus.MustNewConstMetric(s.Online, prometheus.GaugeValue, online(vs.Status), vs.Name)
 		c <- prometheus.MustNewConstMetric(s.MaxClients, prometheus.GaugeValue, float64(vs.MaxClients), vs.Name)
 		c <- prometheus.MustNewConstMetric(s.Uptime, prometheus.CounterValue, float64(vs.Uptime), vs.Name)
