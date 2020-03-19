@@ -60,7 +60,7 @@ func (v *VirtualServerView) Refresh() error {
 			}
 			vs, err = v.getDetails(vs.ID)
 			if err != nil {
-				fmt.Errorf("failed to fetch details: %w", err)
+				return fmt.Errorf("failed to fetch details: %w", err)
 			}
 			v.vServer[vs.ID] = vs
 		}
