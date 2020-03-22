@@ -40,7 +40,7 @@ func (c *Client) login(remote string, serverQueryOptions ...options) error {
 
 	err = t.Login(c.user, c.password)
 	if err != nil {
-		fmt.Errorf("failed to login: %w", err)
+		return fmt.Errorf("failed to login: %w", err)
 	}
 	return nil
 }

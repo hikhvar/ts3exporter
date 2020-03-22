@@ -10,18 +10,19 @@ type VirtualServer struct {
 	Name                      string  `sq:"virtualserver_name"`
 	Status                    string  `sq:"virtualserver_status"`
 	ClientsOnline             int     `sq:"virtualserver_clientsonline"`
+	QueryClientsOnline        int     `sq:"virtualserver_queryclientsonline"`
 	MaxClients                int     `sq:"virtualserver_maxclients"`
 	Uptime                    int     `sq:"virtualserver_uptime"`
 	ChannelsOnline            int     `sq:"virtualserver_channelsonline"`
 	MaxDownloadTotalBandwidth float64 `sq:"virtualserver_max_download_total_bandwidth"`
-	MaxUploadTotalBandwidth   float64 `sq:"virtualserver_max_download_total_bandwidth"`
+	MaxUploadTotalBandwidth   float64 `sq:"virtualserver_max_upload_total_bandwidth"`
 	ClientsConnections        int     `sq:"virtualserver_client_connections"`
 	QueryClientsConnections   int     `sq:"virtualserver_queryclientsonline"`
 
 	FileTransferBytesSentTotal     int `sq:"connection_filetransfer_bytes_sent_total"`
 	FileTransferBytesReceivedTotal int `sq:"connection_filetransfer_bytes_received_total"`
 
-	ControlBytesSendTotal     int `sq:"connection_bytes_received_control"`
+	ControlBytesSendTotal     int `sq:"connection_bytes_sent_control"`
 	ControlBytesReceivedTotal int `sq:"connection_bytes_received_control"`
 
 	SpeechBytesSendTotal     int `sq:"connection_bytes_sent_speech"`
@@ -60,7 +61,7 @@ func (v *VirtualServerView) Refresh() error {
 			}
 			vs, err = v.getDetails(vs.ID)
 			if err != nil {
-				fmt.Errorf("failed to fetch details: %w", err)
+				return fmt.Errorf("failed to fetch details: %w", err)
 			}
 			v.vServer[vs.ID] = vs
 		}

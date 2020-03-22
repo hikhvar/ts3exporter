@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -55,5 +56,7 @@ func mustReadPassword(password, passwordFile string) string {
 	if err != nil {
 		log.Fatalf("failed to read password file: %v\n", err)
 	}
-	return string(data)
+
+	// Trim possible line breaks that can be automatically added by e.g. vim
+	return strings.Trim(string(data), "\r\n")
 }
