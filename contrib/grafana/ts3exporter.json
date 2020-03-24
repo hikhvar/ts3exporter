@@ -52,7 +52,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1584307149250,
+  "iteration": 1585051447986,
   "links": [],
   "panels": [
     {
@@ -257,6 +257,7 @@
       }
     },
     {
+      "cacheTimeout": null,
       "datasource": "${DS_PROMETHEUS}",
       "gridPos": {
         "h": 7,
@@ -265,6 +266,7 @@
         "y": 6
       },
       "id": 10,
+      "links": [],
       "options": {
         "colorMode": "value",
         "fieldOptions": {
@@ -272,7 +274,19 @@
             "last"
           ],
           "defaults": {
-            "mappings": [],
+            "decimals": 1,
+            "mappings": [
+              {
+                "id": 0,
+                "op": "=",
+                "text": "N/A",
+                "type": 1,
+                "value": "null"
+              }
+            ],
+            "max": 100,
+            "min": 0,
+            "nullValueMode": "connected",
             "thresholds": {
               "mode": "absolute",
               "steps": [
@@ -289,7 +303,7 @@
         },
         "graphMode": "area",
         "justifyMode": "auto",
-        "orientation": "auto"
+        "orientation": "horizontal"
       },
       "pluginVersion": "6.6.0",
       "repeat": "virtualserver",
@@ -365,7 +379,7 @@
         }
       ],
       "spaceLength": 10,
-      "stack": true,
+      "stack": false,
       "steppedLine": false,
       "targets": [
         {
@@ -413,7 +427,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Clients online",
+      "title": "Used Bandwidth",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -493,12 +507,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "max by (virtualserver) (ts3_serverinfo_query_client_connections)",
+          "expr": "max by (virtualserver) (ts3_serverinfo_query_clients_online)",
           "legendFormat": "{{virtualserver}} QueryClients",
           "refId": "B"
         },
         {
-          "expr": "max by (virtualserver) (ts3_serverinfo_client_connections)",
+          "expr": "max by (virtualserver) (ts3_serverinfo_clients_online - ts3_serverinfo_query_clients_online)",
           "legendFormat": "{{virtualserver}} Clients",
           "refId": "C"
         }
@@ -575,7 +589,7 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -595,5 +609,5 @@
   "timezone": "",
   "title": "Teamspeak 3",
   "uid": "XllRPbuZk",
-  "version": 6
+  "version": 8
 }
