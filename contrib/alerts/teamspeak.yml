@@ -1,0 +1,18 @@
+groups:
+  - name: Teamspeak
+    rules:
+      - alert: ExporterUpdateError
+        expr: rate(ts3_exporter_data_model_refresh_errors_total[5m]) > 0
+        for: 30m
+        labels:
+          severity: page
+        annotations:
+          summary: Teamspeak exporter can't connect to teamspeak server
+
+      - alert: VirtualServerOffline
+        expr: min by (virtualserver) (ts3_serverinfo_online) < 1
+        for: 30m
+        labels:
+          severity: page
+        annotations:
+          summary: Virtual Teamspeak Server offline
