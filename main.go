@@ -32,6 +32,8 @@ func main() {
 	mc := collector.NewMultiCollector(sInfo)
 
 	prometheus.MustRegister(mc)
+
+	prometheus.MustRegister(mc, collector.NewClient(c))
 	// The Handler function provides a default handler to expose metrics
 	// via an HTTP server. "/metrics" is the usual endpoint for that.
 	http.Handle("/metrics", promhttp.Handler())
