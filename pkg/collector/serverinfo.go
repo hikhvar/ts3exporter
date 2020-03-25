@@ -7,10 +7,10 @@ import (
 
 const serverInfoSubsystem = "serverinfo"
 
-var serverInfoLabels = []string{"virtualserver"}
+var serverInfoLabels = []string{virtualServerLabel}
 
 type ServerInfo struct {
-	vServerView *serverquery.VirtualServerView
+	vServerView ServerInfoInformer
 
 	ClientsOnline             *prometheus.Desc
 	QueryClientsOnline        *prometheus.Desc
@@ -39,9 +39,15 @@ type ServerInfo struct {
 	BytesReceivedTotal *prometheus.Desc
 }
 
-func NewServerInfo(c serverquery.Executor) *ServerInfo {
+// A ServerInfoInformer knows how to collect the data from all virtual servers on the monitoring target
+type ServerInfoInformer interface {
+	Refresh() error
+	All() []serverquery.VirtualServer
+}
+
+func NewServerInfo(c ServerInfoInformer) *ServerInfo {
 	return &ServerInfo{
-		vServerView:                    serverquery.NewVirtualServer(c),
+		vServerView:                    c,
 		ClientsOnline:                  prometheus.NewDesc(fqdn(serverInfoSubsystem, "clients_online"), "number of currently online clients", serverInfoLabels, nil),
 		QueryClientsOnline:             prometheus.NewDesc(fqdn(serverInfoSubsystem, "query_clients_online"), "number of currently online query clients", serverInfoLabels, nil),
 		Online:                         prometheus.NewDesc(fqdn(serverInfoSubsystem, "online"), "is the virtualserver online", serverInfoLabels, nil),

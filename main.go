@@ -22,14 +22,22 @@ func main() {
 	user := flag.String("user", "serveradmin", "the serverquery user of the ts3exporter")
 	password := flag.String("password", "", "the serverquery password of the ts3exporter")
 	passwordFile := flag.String("passwordfile", "/etc/ts3exporter/password", "file containing the password. Only read if -password not set. Must have 0600 permission.")
+	disableChannel := flag.Bool("disablechannel", false, "disables the channel collector. Disable the channel collector if it produces a too high label cardinality.")
 
 	flag.Parse()
 	c, err := serverquery.NewClient(*remote, *user, mustReadPassword(*password, *passwordFile))
 	if err != nil {
 		log.Fatalf("failed to init client %v\n", err)
 	}
-	sInfo := collector.NewServerInfo(c)
+	sqInfo := serverquery.NewVirtualServer(c)
+	sInfo := collector.NewServerInfo(sqInfo)
 	mc := collector.NewMultiCollector(sInfo)
+
+	if !*disableChannel {
+		cqInfo := serverquery.NewChannelView(c, sqInfo)
+		cInfo := collector.NewChannel(cqInfo)
+		mc.Add(cInfo)
+	}
 
 	prometheus.MustRegister(mc)
 	// The Handler function provides a default handler to expose metrics
