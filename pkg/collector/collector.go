@@ -11,6 +11,9 @@ type TS3Collector interface {
 	Refresh() error
 }
 
+// A MultiCollector implements the prometheus.Collector interface. The MultiCollector triggers a Refresh on all managed
+// TS3Collectors before calling their Collect function. Thus every TS3Collector should provide the current values upon
+// scrape.
 type MultiCollector struct {
 	collectors    []TS3Collector
 	refreshErrors prometheus.Counter
@@ -26,6 +29,11 @@ func NewMultiCollector(collectors ...TS3Collector) *MultiCollector {
 			Help:      "Errors encountered while updating the internal server model",
 		}),
 	}
+}
+
+// Add adds a new TS3Collector to the collectors managed by this MultiCollector
+func (m *MultiCollector) Add(c TS3Collector) {
+	m.collectors = append(m.collectors, c)
 }
 
 func (m *MultiCollector) Describe(c chan<- *prometheus.Desc) {
