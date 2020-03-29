@@ -52,7 +52,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1585051447986,
+  "iteration": 1585486667736,
   "links": [],
   "panels": [
     {
@@ -170,6 +170,168 @@
       "type": "stat"
     },
     {
+      "datasource": "${DS_PROMETHEUS}",
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 9,
+        "y": 1
+      },
+      "id": 18,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [],
+          "values": false
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "pluginVersion": "6.6.0",
+      "targets": [
+        {
+          "expr": "sum(ts3_channel_permanent{virtualserver=~\"${virtualserver}\"})",
+          "refId": "A"
+        },
+        {
+          "expr": "",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Permanent Channels",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_PROMETHEUS}",
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 13,
+        "y": 1
+      },
+      "id": 19,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [],
+          "values": false
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "pluginVersion": "6.6.0",
+      "targets": [
+        {
+          "expr": "sum(ts3_channel_password{virtualserver=~\"${virtualserver}\"})",
+          "refId": "A"
+        },
+        {
+          "expr": "",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Password Protected Channels",
+      "type": "stat"
+    },
+    {
+      "datasource": "${DS_PROMETHEUS}",
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 17,
+        "y": 1
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          "overrides": [],
+          "values": false
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "pluginVersion": "6.6.0",
+      "targets": [
+        {
+          "expr": "sum(ts3_channel_unencrypted{virtualserver=~\"${virtualserver}\"})",
+          "refId": "A"
+        },
+        {
+          "expr": "",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Unencrypted Channels",
+      "type": "stat"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -179,8 +341,8 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 5,
-        "w": 15,
-        "x": 9,
+        "w": 3,
+        "x": 21,
         "y": 1
       },
       "hiddenSeries": false,
@@ -310,7 +472,7 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "expr": "ts3_serverinfo_uptime",
+          "expr": "ts3_serverinfo_uptime{virtualserver=~\"${virtualserver}\"}",
           "legendFormat": "{{virtualserver}}",
           "refId": "A"
         }
@@ -383,42 +545,42 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(ts3_serverinfo_control_bytes_sent_total[5m])",
+          "expr": "rate(ts3_serverinfo_control_bytes_sent_total{virtualserver=~\"${virtualserver}\"}[5m])",
           "legendFormat": "{{virtualserver}} control bytes send",
           "refId": "B"
         },
         {
-          "expr": "rate(ts3_serverinfo_control_bytes_received_total[5m])",
+          "expr": "rate(ts3_serverinfo_control_bytes_received_total{virtualserver=~\"${virtualserver}\"}[5m])",
           "legendFormat": "{{virtualserver}} control bytes received",
           "refId": "C"
         },
         {
-          "expr": "rate(ts3_serverinfo_file_transfer_bytes_sent_total[5m])",
+          "expr": "rate(ts3_serverinfo_file_transfer_bytes_sent_total{virtualserver=~\"${virtualserver}\"}[5m])",
           "legendFormat": "{{virtualserver}} file transfer bytes send",
           "refId": "A"
         },
         {
-          "expr": "rate(ts3_serverinfo_file_transfer_bytes_received_total[5m])",
+          "expr": "rate(ts3_serverinfo_file_transfer_bytes_received_total{virtualserver=~\"${virtualserver}\"}[5m])",
           "legendFormat": "{{virtualserver}} file transfer bytes received",
           "refId": "D"
         },
         {
-          "expr": "rate(ts3_serverinfo_keepalive_bytes_sent_total[5m])",
+          "expr": "rate(ts3_serverinfo_keepalive_bytes_sent_total{virtualserver=~\"${virtualserver}\"}[5m])",
           "legendFormat": "{{virtualserver}} keepalive bytes send",
           "refId": "E"
         },
         {
-          "expr": "rate(ts3_serverinfo_keepalive_bytes_received_total[5m])",
+          "expr": "rate(ts3_serverinfo_keepalive_bytes_received_total{virtualserver=~\"${virtualserver}\"}[5m])",
           "legendFormat": "{{virtualserver}} keepalive bytes received",
           "refId": "F"
         },
         {
-          "expr": "rate(ts3_serverinfo_speech_bytes_sent_total[5m])",
+          "expr": "rate(ts3_serverinfo_speech_bytes_sent_total{virtualserver=~\"${virtualserver}\"}[5m])",
           "legendFormat": "{{virtualserver}} speech bytes send",
           "refId": "G"
         },
         {
-          "expr": "rate(ts3_serverinfo_speech_bytes_received_total[5m])",
+          "expr": "rate(ts3_serverinfo_speech_bytes_received_total{virtualserver=~\"${virtualserver}\"}[5m])",
           "legendFormat": "{{virtualserver}} speech bytes received",
           "refId": "H"
         }
@@ -507,12 +669,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "max by (virtualserver) (ts3_serverinfo_query_clients_online)",
+          "expr": "max by (virtualserver) (ts3_serverinfo_query_clients_online{virtualserver=~\"${virtualserver}\"})",
           "legendFormat": "{{virtualserver}} QueryClients",
           "refId": "B"
         },
         {
-          "expr": "max by (virtualserver) (ts3_serverinfo_clients_online - ts3_serverinfo_query_clients_online)",
+          "expr": "max by (virtualserver) (ts3_serverinfo_clients_online{virtualserver=~\"${virtualserver}\"} - ts3_serverinfo_query_clients_online{virtualserver=~\"${virtualserver}\"})",
           "legendFormat": "{{virtualserver}} Clients",
           "refId": "C"
         }
@@ -522,6 +684,97 @@
       "timeRegions": [],
       "timeShift": null,
       "title": "Clients online",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_PROMETHEUS}",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "hiddenSeries": false,
+      "id": 17,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "ts3_channel_clients_online{virtualserver=~\"${virtualserver}\"}",
+          "legendFormat": "{{channel}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Clients in Channels",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -609,5 +862,5 @@
   "timezone": "",
   "title": "Teamspeak 3",
   "uid": "XllRPbuZk",
-  "version": 8
+  "version": 13
 }
