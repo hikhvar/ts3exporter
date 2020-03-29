@@ -102,6 +102,7 @@ func (c *ChannelView) updateAllOnVServer(vServer VirtualServer) error {
 			if err := c.getDetails(&ch); err != nil {
 				return fmt.Errorf("failed to parse details for channel %d: %w", ch.ID, err)
 			}
+			ch.HostingServer = vServer
 			c.channels[ch.ID] = ch
 		}
 	}
