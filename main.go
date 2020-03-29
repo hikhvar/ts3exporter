@@ -22,10 +22,11 @@ func main() {
 	user := flag.String("user", "serveradmin", "the serverquery user of the ts3exporter")
 	password := flag.String("password", "", "the serverquery password of the ts3exporter")
 	passwordFile := flag.String("passwordfile", "/etc/ts3exporter/password", "file containing the password. Only read if -password not set. Must have 0600 permission.")
-	disableChannel := flag.Bool("disablechannel", false, "disables the channel collector. Disable the channel collector if it produces a too high label cardinality.")
+	enableChannelMetrics := flag.Bool("enablechannelmetrics", false, "Enables the channel collector.")
+	ignoreFloodLimits := flag.Bool("ignorefloodlimits", false, "Disable the server query flood limiter. Use this only if your exporter is whitelisted in the query_ip_whitelist.txt file.")
 
 	flag.Parse()
-	c, err := serverquery.NewClient(*remote, *user, mustReadPassword(*password, *passwordFile))
+	c, err := serverquery.NewClient(*remote, *user, mustReadPassword(*password, *passwordFile), *ignoreFloodLimits)
 	if err != nil {
 		log.Fatalf("failed to init client %v\n", err)
 	}
@@ -33,13 +34,11 @@ func main() {
 	sInfo := collector.NewServerInfo(sqInfo)
 	mc := collector.NewMultiCollector(sInfo)
 
-	if !*disableChannel {
+	if *enableChannelMetrics {
 		cqInfo := serverquery.NewChannelView(c, sqInfo)
 		cInfo := collector.NewChannel(cqInfo)
 		mc.Add(cInfo)
 	}
-
-	prometheus.MustRegister(mc)
 
 	prometheus.MustRegister(mc, collector.NewClient(c))
 	// The Handler function provides a default handler to expose metrics

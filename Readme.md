@@ -16,18 +16,40 @@ go build
 ``` 
 # ./ts3exporter -h
 Usage of ./ts3exporter:
+  -enablechannelmetrics
+    	Enables the channel collector.
+  -ignorefloodlimits
+    	Disable the server query flood limiter. Use this only if your exporter is whitelisted in the query_ip_whitelist.txt file.
   -listen string
-        listen address of the exporter (default ":9189")
+    	listen address of the exporter (default ":9189")
   -password string
-        the serverquery password of the ts3exporter
+    	the serverquery password of the ts3exporter
   -passwordfile string
-        file containing the password. Only read if -password not set. Must have 0600 permission. (default "/etc/ts3exporter/password")
+    	file containing the password. Only read if -password not set. Must have 0600 permission. (default "/etc/ts3exporter/password")
   -remote string
-        remote address of server query port (default "localhost:10011")
+    	remote address of server query port (default "localhost:10011")
   -user string
-        the serverquery user of the ts3exporter (default "serveradmin")
-
+    	the serverquery user of the ts3exporter (default "serveradmin")
 ```
+
+## Channel Metrics
+The exporter can produce per channel metrics. The channel metrics are disabled by default, since the channel metrics produce a high number of 
+server query commands. The current formular is `(2 + NumberOfChannels) * NumberOfVServer` server query commands. The default server
+query flood limit is 10 commands per 3 seconds. To not run into that limit, the exporter reads the limit at login time and 
+throttles itself below that. The default results in one server query command every 300ms.
+Using the default flood limit and a vServer with 10 channels we get the following scrape time:
+```text
+(2 * 10)*1 * 300ms = 6s
+```
+The `serverinfo` metrics collector produces `1 + NumberOfVServer*2` 
+serverquery commands. In our example that adds additional 900ms.
+Since we update the metrics if the prometheus server calls the `/metrics`
+endpoint, the scrape timeout must be at least 7 seconds. 
+
+### Workarounds
+To speed up the scraping you can increase the server query flood limits or add the IP of your exporter to the
+`query_ip_whitelist.txt` file. If your exporter IP is added to the whitelist file, set the option `-ignorefloodlimits` to 
+disable the limiter.
 
 ## Examples:
 ```bash

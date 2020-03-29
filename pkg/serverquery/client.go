@@ -15,6 +15,7 @@ type Client struct {
 	user               string
 	password           string
 	remote             string
+	respectLimits      bool
 	serverQueryOptions []options
 	virtualServerID    int
 	metrics            ClientMetrics
@@ -24,11 +25,12 @@ type options func() func(client *ts3.Client) error
 
 // NewClient instantiate a new client to the given remote. If the function returns successfully the client is already
 // logged in.
-func NewClient(remote, user, password string, serverQueryOptions ...options) (*Client, error) {
+func NewClient(remote, user, password string, ignoreLimits bool, serverQueryOptions ...options) (*Client, error) {
 	c := &Client{
 		user:               user,
 		password:           password,
 		remote:             remote,
+		respectLimits:      !ignoreLimits,
 		serverQueryOptions: serverQueryOptions,
 	}
 	return c, c.reconnect()
@@ -38,8 +40,10 @@ func (c *Client) reconnect() error {
 	if err := c.login(c.remote, c.serverQueryOptions...); err != nil {
 		return fmt.Errorf("failed to login: %w", err)
 	}
-	if err := c.setupLimiter(); err != nil {
-		return fmt.Errorf("failed to setup limiter: %w", err)
+	if c.respectLimits {
+		if err := c.setupLimiter(); err != nil {
+			return fmt.Errorf("failed to setup limiter: %w", err)
+		}
 	}
 	return nil
 }
