@@ -18,7 +18,6 @@ type Client struct {
 	remote             string
 	respectLimits      bool
 	serverQueryOptions []options
-	virtualServerID    int
 	metrics            *ClientMetrics
 }
 

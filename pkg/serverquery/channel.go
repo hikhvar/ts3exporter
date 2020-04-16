@@ -92,14 +92,15 @@ func (c *ChannelView) getDetails(ch *Channel) error {
 	if err != nil {
 		return fmt.Errorf("failed to run channelinfo command: %w", err)
 	}
-	for _, r := range res {
-		if len(r.Items) != 1 {
-			return fmt.Errorf("expected exactly one channelinfo response got %d", len(r.Items))
-		}
-		if err = r.Items[0].ReadInto(ch); err != nil {
-			return fmt.Errorf("failed to parse channel response: %w", err)
-		}
-		return nil
+	if len(res) < 1 {
+		return fmt.Errorf("expected at least one response line")
 	}
-	return fmt.Errorf("reached unreachable code")
+	if len(res[0].Items) != 1 {
+		return fmt.Errorf("expected exactly one channelinfo response got %d", len(res[0].Items))
+	}
+	if err = res[0].Items[0].ReadInto(ch); err != nil {
+		return fmt.Errorf("failed to parse channel response: %w", err)
+	}
+	return nil
+
 }

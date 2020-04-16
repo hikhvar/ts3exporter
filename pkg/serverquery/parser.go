@@ -66,6 +66,7 @@ func unescape(in string) string {
 }
 
 // escape returns an escaped string
+// nolint: unused,deadcode
 func escape(in string) string {
 	for key, value := range escaping {
 		in = strings.ReplaceAll(in, key, value)
