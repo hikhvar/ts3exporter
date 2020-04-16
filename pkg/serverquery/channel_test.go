@@ -21,7 +21,6 @@ func TestChannelStructTags(t *testing.T) {
 	require.Nil(t, err)
 	expected := Channel{
 		HostingServer: VirtualServer{},
-		stale:         false,
 		ID:            1,
 		PID:           10,
 		Order:         11,
