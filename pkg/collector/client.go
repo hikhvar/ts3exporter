@@ -9,7 +9,7 @@ const clientSubsystem = "client"
 
 // InstrumentedClient provides metrics from a serverquery client
 type InstrumentedClient interface {
-	Metrics() serverquery.ClientMetrics
+	Metrics() *serverquery.ClientMetrics
 }
 
 // Client is a collector providing metrics of the internal serverquery client

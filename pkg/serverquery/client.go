@@ -19,7 +19,7 @@ type Client struct {
 	respectLimits      bool
 	serverQueryOptions []options
 	virtualServerID    int
-	metrics            ClientMetrics
+	metrics            *ClientMetrics
 }
 
 type options func() func(client *ts3.Client) error
@@ -33,6 +33,7 @@ func NewClient(remote, user, password string, ignoreLimits bool, serverQueryOpti
 		remote:             remote,
 		respectLimits:      !ignoreLimits,
 		serverQueryOptions: serverQueryOptions,
+		metrics:            &ClientMetrics{},
 	}
 	return c, c.reconnect()
 }
@@ -94,7 +95,7 @@ func (c *Client) setupLimiter() error {
 	return nil
 }
 
-func (c *Client) Metrics() ClientMetrics {
+func (c *Client) Metrics() *ClientMetrics {
 	return c.metrics
 }
 
