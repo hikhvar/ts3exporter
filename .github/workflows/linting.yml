@@ -2,6 +2,7 @@ on: [push, pull_request]
 name: linting
 jobs:
   linting:
+    runs-on: ubuntu-latest
     steps:
     - name: Run golangci-lint
       uses: actions-contrib/golangci-lint@v1
