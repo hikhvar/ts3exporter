@@ -6,7 +6,6 @@ type ChannelID int
 
 type Channel struct {
 	HostingServer VirtualServer
-	stale         bool
 	ID            ChannelID `sq:"cid"`
 	PID           int       `sq:"pid"`
 	Order         int       `sq:"channel_order"`
@@ -23,31 +22,27 @@ type Channel struct {
 	Password      int       `sq:"channel_flag_password"`
 }
 
-// VServerInventory can return all known VServer
-type VServerInventory interface {
-	All() []VirtualServer
-}
-
 type ChannelView struct {
-	e        Executor
-	channels map[ChannelID]Channel
-	vServer  VServerInventory
+	e                Executor
+	channels         map[ChannelID]Channel
+	vServerInventory *VirtualServerView
 }
 
-func NewChannelView(e Executor, inventory VServerInventory) *ChannelView {
+func NewChannelView(e Executor) *ChannelView {
 	return &ChannelView{
-		e:        e,
-		channels: make(map[ChannelID]Channel),
-		vServer:  inventory,
+		e:                e,
+		channels:         make(map[ChannelID]Channel),
+		vServerInventory: NewVirtualServer(e),
 	}
 }
 
 // Refresh refreshes the internal representation of the ChannelView. It changes into all virtual server
-// known by the vServer inventory
+// known by the vServer inventory.
 func (c *ChannelView) Refresh() error {
-	c.markAllStale()
-	defer c.deleteAllStale()
-	for _, vServer := range c.vServer.All() {
+	if err := c.vServerInventory.Refresh(); err != nil {
+		return fmt.Errorf("failed to update vserver inventory: %w", err)
+	}
+	for _, vServer := range c.vServerInventory.All() {
 		err := c.updateAllOnVServer(vServer)
 		if err != nil {
 			return fmt.Errorf("failed to update metrics on vServer %s: %w", vServer.Name, err)
@@ -63,24 +58,6 @@ func (c *ChannelView) All() []Channel {
 		ret = append(ret, ch)
 	}
 	return ret
-}
-
-// markAllStale marks all channels stale. They are set during scrape. If the aren't set, they will be deleted
-// by deleteAllStale
-func (c *ChannelView) markAllStale() {
-	for id, channel := range c.channels {
-		channel.stale = true
-		c.channels[id] = channel
-	}
-}
-
-// deleteAllStale deletes all stale channels
-func (c *ChannelView) deleteAllStale() {
-	for id, channel := range c.channels {
-		if channel.stale {
-			delete(c.channels, id)
-		}
-	}
 }
 
 // updateAllOnVServer update all channels on the given virtual server

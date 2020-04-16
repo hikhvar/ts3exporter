@@ -1,6 +1,8 @@
 package collector
 
 import (
+	"log"
+
 	"github.com/hikhvar/ts3exporter/pkg/serverquery"
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -10,7 +12,8 @@ const serverInfoSubsystem = "serverinfo"
 var serverInfoLabels = []string{virtualServerLabel}
 
 type ServerInfo struct {
-	vServerView ServerInfoInformer
+	executor        serverquery.Executor
+	internalMetrics *ExporterMetrics
 
 	ClientsOnline             *prometheus.Desc
 	QueryClientsOnline        *prometheus.Desc
@@ -39,15 +42,10 @@ type ServerInfo struct {
 	BytesReceivedTotal *prometheus.Desc
 }
 
-// A ServerInfoInformer knows how to collect the data from all virtual servers on the monitoring target
-type ServerInfoInformer interface {
-	Refresh() error
-	All() []serverquery.VirtualServer
-}
-
-func NewServerInfo(c ServerInfoInformer) *ServerInfo {
+func NewServerInfo(executor serverquery.Executor, internalMetrics *ExporterMetrics) *ServerInfo {
 	return &ServerInfo{
-		vServerView:                    c,
+		executor:                       executor,
+		internalMetrics:                internalMetrics,
 		ClientsOnline:                  prometheus.NewDesc(fqdn(serverInfoSubsystem, "clients_online"), "number of currently online clients", serverInfoLabels, nil),
 		QueryClientsOnline:             prometheus.NewDesc(fqdn(serverInfoSubsystem, "query_clients_online"), "number of currently online query clients", serverInfoLabels, nil),
 		Online:                         prometheus.NewDesc(fqdn(serverInfoSubsystem, "online"), "is the virtualserver online", serverInfoLabels, nil),
@@ -77,7 +75,12 @@ func (s *ServerInfo) Describe(c chan<- *prometheus.Desc) {
 }
 
 func (s *ServerInfo) Collect(c chan<- prometheus.Metric) {
-	for _, vs := range s.vServerView.All() {
+	vServerView := serverquery.NewVirtualServer(s.executor)
+	if err := vServerView.Refresh(); err != nil {
+		s.internalMetrics.RefreshError(serverInfoSubsystem)
+		log.Printf("failed to refresh server info view: %v", err)
+	}
+	for _, vs := range vServerView.All() {
 		c <- prometheus.MustNewConstMetric(s.ClientsOnline, prometheus.GaugeValue, float64(vs.ClientsOnline), vs.Name)
 		c <- prometheus.MustNewConstMetric(s.QueryClientsOnline, prometheus.GaugeValue, float64(vs.QueryClientsOnline), vs.Name)
 		c <- prometheus.MustNewConstMetric(s.Online, prometheus.GaugeValue, online(vs.Status), vs.Name)
@@ -106,8 +109,4 @@ func online(status string) float64 {
 		return 1.0
 	}
 	return 0.0
-}
-
-func (s *ServerInfo) Refresh() error {
-	return s.vServerView.Refresh()
 }

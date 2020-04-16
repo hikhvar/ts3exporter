@@ -29,17 +29,15 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to init client %v\n", err)
 	}
-	sqInfo := serverquery.NewVirtualServer(c)
-	sInfo := collector.NewServerInfo(sqInfo)
-	mc := collector.NewMultiCollector(sInfo)
+	internalMetrics := collector.NewExporterMetrics()
+	seq := collector.SequentialCollector{collector.NewServerInfo(c, internalMetrics)}
 
 	if *enableChannelMetrics {
-		cqInfo := serverquery.NewChannelView(c, sqInfo)
-		cInfo := collector.NewChannel(cqInfo)
-		mc.Add(cInfo)
+		cInfo := collector.NewChannel(c, internalMetrics)
+		seq = append(seq, cInfo)
 	}
 
-	prometheus.MustRegister(mc, collector.NewClient(c))
+	prometheus.MustRegister(seq, collector.NewClient(c))
 	// The Handler function provides a default handler to expose metrics
 	// via an HTTP server. "/metrics" is the usual endpoint for that.
 	http.Handle("/metrics", promhttp.Handler())

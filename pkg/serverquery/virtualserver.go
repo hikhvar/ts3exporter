@@ -51,7 +51,7 @@ func NewVirtualServer(e Executor) *VirtualServerView {
 
 // Refresh refreshes the internal representation of the VirtualServerView
 func (v *VirtualServerView) Refresh() error {
-	// FIXME: implement cleanup of stale vServers
+	v.vServer = make(map[VirtualServerID]VirtualServer, len(v.vServer))
 	res, err := v.e.Exec("serverlist")
 	if err != nil {
 		return fmt.Errorf("failed to list v servers: %w", err)
