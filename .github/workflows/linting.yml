@@ -4,5 +4,7 @@ jobs:
   linting:
     runs-on: ubuntu-latest
     steps:
-    - name: Run golangci-lint
-      uses: actions-contrib/golangci-lint@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run golangci-lint
+        uses: actions-contrib/golangci-lint@v1
