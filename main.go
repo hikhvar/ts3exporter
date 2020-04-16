@@ -37,7 +37,7 @@ func main() {
 		seq = append(seq, cInfo)
 	}
 
-	prometheus.MustRegister(seq, collector.NewClient(c))
+	prometheus.MustRegister(append(seq, collector.NewClient(c)))
 	// The Handler function provides a default handler to expose metrics
 	// via an HTTP server. "/metrics" is the usual endpoint for that.
 	http.Handle("/metrics", promhttp.Handler())
