@@ -20,13 +20,12 @@ func main() {
 	remote := flag.String("remote", "localhost:10011", "remote address of server query port")
 	listen := flag.String("listen", ":9189", "listen address of the exporter")
 	user := flag.String("user", "serveradmin", "the serverquery user of the ts3exporter")
-	password := flag.String("password", "", "the serverquery password of the ts3exporter")
-	passwordFile := flag.String("passwordfile", "/etc/ts3exporter/password", "file containing the password. Only read if -password not set. Must have 0600 permission.")
+	passwordFile := flag.String("passwordfile", "/etc/ts3exporter/password", "file containing the password. Must have 0600 permission. The file is not read if the environ")
 	enableChannelMetrics := flag.Bool("enablechannelmetrics", false, "Enables the channel collector.")
 	ignoreFloodLimits := flag.Bool("ignorefloodlimits", false, "Disable the server query flood limiter. Use this only if your exporter is whitelisted in the query_ip_whitelist.txt file.")
 
 	flag.Parse()
-	c, err := serverquery.NewClient(*remote, *user, mustReadPassword(*password, *passwordFile), *ignoreFloodLimits)
+	c, err := serverquery.NewClient(*remote, *user, mustReadPassword(*passwordFile), *ignoreFloodLimits)
 	if err != nil {
 		log.Fatalf("failed to init client %v\n", err)
 	}
@@ -47,13 +46,10 @@ func main() {
 	log.Fatal(http.ListenAndServe(*listen, nil))
 }
 
-// mustReadPassword reads the password either from the commandline flag or the password file. The password file is only
+// mustReadPassword reads the password from the password file. The password file is only
 // used if password is the empty string.
 // If the file read fails, this function terminates the process.
-func mustReadPassword(password, passwordFile string) string {
-	if password != "" {
-		return password
-	}
+func mustReadPassword(passwordFile string) string {
 	fInfo, err := os.Stat(passwordFile)
 	if err != nil {
 		log.Fatalf("failed to get fileinfo of password file: %v\n", err)
