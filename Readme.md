@@ -15,17 +15,15 @@ go build
 ## Usage
 ``` 
 # ./ts3exporter -h
-Usage of ./ts3exporter:
+Usage of /ts3exporter:
   -enablechannelmetrics
     	Enables the channel collector.
   -ignorefloodlimits
     	Disable the server query flood limiter. Use this only if your exporter is whitelisted in the query_ip_whitelist.txt file.
   -listen string
     	listen address of the exporter (default ":9189")
-  -password string
-    	the serverquery password of the ts3exporter
   -passwordfile string
-    	file containing the password. Only read if -password not set. Must have 0600 permission. (default "/etc/ts3exporter/password")
+    	file containing the password. Must have 0600 permission. The file is not read if the environment variable SERVERQUERY_PASSWORD is set. (default "/etc/ts3exporter/password")
   -remote string
     	remote address of server query port (default "localhost:10011")
   -user string
