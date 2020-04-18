@@ -55,7 +55,7 @@ func mustReadPassword(passwordFile string) string {
 	if err != nil {
 		log.Fatalf("failed to get fileinfo of password file: %v\n", err)
 	}
-	if fInfo.Mode() != 0600 || fInfo.Mode() != 0400 {
+	if !(fInfo.Mode() == 0600 || fInfo.Mode() == 0400) {
 		log.Fatalf("password file permissions are to open. Have: %s, want at most: %o\n", fInfo.Mode().String(), 0600)
 	}
 	data, err := ioutil.ReadFile(passwordFile)
