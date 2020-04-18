@@ -3,7 +3,6 @@ package serverquery
 import (
 	"errors"
 	"fmt"
-	"log"
 	"syscall"
 	"time"
 
@@ -99,7 +98,6 @@ func (c *Client) Metrics() *ClientMetrics {
 }
 
 func (c *Client) Exec(cmd string) ([]Result, error) {
-	log.Println(cmd)
 	if c.limiter != nil {
 		<-c.limiter.C
 	}
