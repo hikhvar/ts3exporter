@@ -1,12 +1,21 @@
-FROM golang:1.14 as build-env
+FROM golang:1.14 AS build
 
-WORKDIR /go/src/github.com/hikhvar/ts3exporter
 ADD . /go/src/github.com/hikhvar/ts3exporter
 
-RUN go get -d -v ./...
+RUN cd /go/src/github.com/hikhvar/ts3exporter && \
+    go get -d -v ./... && \
+    CGO_ENABLED=0 go build -o /go/bin/ts3exporter
 
-RUN go build -o /go/bin/ts3exporter
+RUN mkdir -p /rootfs/etc && \
+    cp /go/bin/ts3exporter /rootfs/ && \
+    echo "nogroup:*:100:nobody" > /rootfs/etc/group && \
+    echo "nobody:*:100:100:::" > /rootfs/etc/passwd
 
-FROM gcr.io/distroless/base
-COPY --from=build-env /go/bin/ts3exporter /
+
+FROM scratch
+
+COPY --from=build --chown=100:100 /rootfs /
+
+USER 100:100
+EXPOSE 9189/tcp
 ENTRYPOINT ["/ts3exporter"]
