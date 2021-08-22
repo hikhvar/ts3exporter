@@ -2,14 +2,14 @@ package collector
 
 import (
 	"log"
-
+	"fmt"
 	"github.com/hikhvar/ts3exporter/pkg/serverquery"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 const channelSubsystem = "channel"
 
-var channelLabels = []string{virtualServerLabel, channelLabel}
+var channelLabels = []string{virtualServerLabel, channelId, channelLabel}
 
 type Channel struct {
 	executor        serverquery.Executor
@@ -55,15 +55,15 @@ func (c *Channel) Collect(met chan<- prometheus.Metric) {
 		log.Printf("failed to refresh channel view: %v", err)
 	}
 	for _, ch := range channels.All() {
-		met <- prometheus.MustNewConstMetric(c.ClientsOnline, prometheus.GaugeValue, float64(ch.ClientsOnline), ch.HostingServer.Name, ch.Name)
-		met <- prometheus.MustNewConstMetric(c.MaxClients, prometheus.GaugeValue, float64(ch.MaxClients), ch.HostingServer.Name, ch.Name)
-		met <- prometheus.MustNewConstMetric(c.Codec, prometheus.GaugeValue, float64(ch.Codec), ch.HostingServer.Name, ch.Name)
-		met <- prometheus.MustNewConstMetric(c.CodecQuality, prometheus.GaugeValue, float64(ch.CodecQuality), ch.HostingServer.Name, ch.Name)
-		met <- prometheus.MustNewConstMetric(c.LatencyFactor, prometheus.GaugeValue, float64(ch.LatencyFactor), ch.HostingServer.Name, ch.Name)
-		met <- prometheus.MustNewConstMetric(c.Unencrypted, prometheus.GaugeValue, float64(ch.Unencrypted), ch.HostingServer.Name, ch.Name)
-		met <- prometheus.MustNewConstMetric(c.Permanent, prometheus.GaugeValue, float64(ch.Permanent), ch.HostingServer.Name, ch.Name)
-		met <- prometheus.MustNewConstMetric(c.SemiPermanent, prometheus.GaugeValue, float64(ch.SemiPermanent), ch.HostingServer.Name, ch.Name)
-		met <- prometheus.MustNewConstMetric(c.Default, prometheus.GaugeValue, float64(ch.Default), ch.HostingServer.Name, ch.Name)
-		met <- prometheus.MustNewConstMetric(c.Password, prometheus.GaugeValue, float64(ch.Password), ch.HostingServer.Name, ch.Name)
+		met <- prometheus.MustNewConstMetric(c.ClientsOnline, prometheus.GaugeValue, float64(ch.ClientsOnline), ch.HostingServer.Name, fmt.Sprintf("%d",ch.ID), ch.Name)
+		met <- prometheus.MustNewConstMetric(c.MaxClients, prometheus.GaugeValue, float64(ch.MaxClients), ch.HostingServer.Name, fmt.Sprintf("%d",ch.ID), ch.Name)
+		met <- prometheus.MustNewConstMetric(c.Codec, prometheus.GaugeValue, float64(ch.Codec), ch.HostingServer.Name, fmt.Sprintf("%d",ch.ID), ch.Name)
+		met <- prometheus.MustNewConstMetric(c.CodecQuality, prometheus.GaugeValue, float64(ch.CodecQuality), ch.HostingServer.Name, fmt.Sprintf("%d",ch.ID), ch.Name)
+		met <- prometheus.MustNewConstMetric(c.LatencyFactor, prometheus.GaugeValue, float64(ch.LatencyFactor), ch.HostingServer.Name, fmt.Sprintf("%d",ch.ID), ch.Name)
+		met <- prometheus.MustNewConstMetric(c.Unencrypted, prometheus.GaugeValue, float64(ch.Unencrypted), ch.HostingServer.Name, fmt.Sprintf("%d",ch.ID), ch.Name)
+		met <- prometheus.MustNewConstMetric(c.Permanent, prometheus.GaugeValue, float64(ch.Permanent), ch.HostingServer.Name, fmt.Sprintf("%d",ch.ID), ch.Name)
+		met <- prometheus.MustNewConstMetric(c.SemiPermanent, prometheus.GaugeValue, float64(ch.SemiPermanent), ch.HostingServer.Name, fmt.Sprintf("%d",ch.ID), ch.Name)
+		met <- prometheus.MustNewConstMetric(c.Default, prometheus.GaugeValue, float64(ch.Default), ch.HostingServer.Name, fmt.Sprintf("%d",ch.ID), ch.Name)
+		met <- prometheus.MustNewConstMetric(c.Password, prometheus.GaugeValue, float64(ch.Password), ch.HostingServer.Name, fmt.Sprintf("%d",ch.ID), ch.Name)
 	}
 }
